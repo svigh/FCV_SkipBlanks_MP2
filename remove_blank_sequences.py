@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import os
-import tkinter
+import tkinter.filedialog
 import argparse
 
 DEBUG_STUFF = False
