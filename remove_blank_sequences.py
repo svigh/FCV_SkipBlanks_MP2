@@ -10,6 +10,8 @@ VIDEO_CAPTURE_GET_WIDTH = 3
 VIDEO_CAPTURE_GET_HEIGHT = 4
 VIDEO_CAPTURE_GET_CHANNELS = 3
 
+THRESHOLD = 8457252
+
 # https://stackoverflow.com/questions/189943/how-can-i-quantify-difference-between-two-images
 # transform to grey -> normalize ->
 
@@ -17,13 +19,20 @@ def parse_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--input_video", dest="input_video_path", action="store",
 		help="The input video that needs frames to be cut from it")
+	parser.add_argument("--debug", dest="debug", action="store_true",
+		help="Show video window and remove frames during the video")
 
 	args = parser.parse_args()
+
+	if args.debug:
+		global DEBUG_STUFF
+		DEBUG_STUFF = True
+
 	return args
 
 # Skips over frames that are too similar to the previous frame
 # returns the number of skipped frames and total read frames
-def remove_similar_frames(video_path, threshold=8457252):
+def remove_similar_frames(video_path, threshold=THRESHOLD):
 	video_basename = os.path.basename(video_path).split(".")[0]	# Only get the name of the file
 
 	# TODO: get the cv2 constants for these so that i dont define them
