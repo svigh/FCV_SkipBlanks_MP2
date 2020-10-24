@@ -46,11 +46,15 @@ def remove_similar_frames(video_path, threshold=8457252):
 
 	while capture.isOpened():
 		ret, current_frame = capture.read()
+
 		if ret == True:
 			frame_count += 1
 
+			# Apply blur to act as a noise removing filter
+			blurred_frame = cv2.GaussianBlur(current_frame, (5, 5), 0)
+
 			# Define the similarity between frames as the bigness of their difference
-			difference = abs(current_frame - previous_frame)
+			difference = abs(blurred_frame - previous_frame)
 			difference_array_sum = np.sum(difference)
 
 			if DEBUG_STUFF:
@@ -61,14 +65,14 @@ def remove_similar_frames(video_path, threshold=8457252):
 				skipped_frames += 1
 				if DEBUG_STUFF:
 					print("Skipped frame %d.\n" % (frame_count) + "%d vs %d".center(10) % (difference_array_sum, threshold))
-				previous_frame = current_frame
+				previous_frame = blurred_frame
 				continue
 
 			if DEBUG_STUFF:
 				cv2.imshow("frame", current_frame)
 
 			output.write(current_frame)
-			previous_frame = current_frame
+			previous_frame = blurred_frame
 
 			# Press Q on keyboard to exit
 			if cv2.waitKey(25) & 0xFF == ord('q'):
