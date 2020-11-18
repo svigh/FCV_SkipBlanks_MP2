@@ -58,6 +58,7 @@ def remove_similar_frames(video_path, threshold=THRESHOLD):
 
 		if ret == True:
 			frame_count += 1
+			skip_frame = False
 
 			# Apply blur to act as a noise removing filter
 			blurred_frame = cv2.GaussianBlur(current_frame, (5, 5), 0)
@@ -75,12 +76,21 @@ def remove_similar_frames(video_path, threshold=THRESHOLD):
 				if DEBUG_STUFF:
 					print("Skipped frame %d.\n" % (frame_count) + "%d vs %d".center(10) % (difference_array_sum, threshold))
 				previous_frame = blurred_frame
-				continue
+
+				if DEBUG_STUFF:
+					text = "X"
+					font = cv2.FONT_HERSHEY_SIMPLEX
+					offset = 100
+					cv2.putText(img=current_frame, text=text,org=(frame_height//2 - offset, frame_width//2 + offset), fontFace=font, fontScale=20, color=(0, 0, 255), thickness=15, lineType=cv2.LINE_AA)
+					cv2.imshow("frame", current_frame)
+					skip_frame = True
 
 			if DEBUG_STUFF:
 				cv2.imshow("frame", current_frame)
 
-			output.write(current_frame)
+			if not skip_frame:
+				output.write(current_frame)
+
 			previous_frame = blurred_frame
 
 			# Press Q on keyboard to exit
