@@ -72,6 +72,7 @@ def remove_similar_frames(video_path, threshold=THRESHOLD):
 
 			# If two frames are too similar skip the current one
 			if difference_array_sum < threshold:
+				skip_frame = True
 				skipped_frames += 1
 				if DEBUG_STUFF:
 					print("Skipped frame %d.\n" % (frame_count) + "%d vs %d".center(10) % (difference_array_sum, threshold))
@@ -83,7 +84,6 @@ def remove_similar_frames(video_path, threshold=THRESHOLD):
 					offset = 100
 					cv2.putText(img=current_frame, text=text,org=(frame_height//2 - offset, frame_width//2 + offset), fontFace=font, fontScale=20, color=(0, 0, 255), thickness=15, lineType=cv2.LINE_AA)
 					cv2.imshow("frame", current_frame)
-					skip_frame = True
 
 			if DEBUG_STUFF:
 				cv2.imshow("frame", current_frame)
